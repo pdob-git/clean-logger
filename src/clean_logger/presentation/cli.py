@@ -8,25 +8,22 @@ from ..infrastructure.logging.adapters import PythonLoggerAdapter
 from ..application.use_cases.create_order import CreateOrderUseCase
 
 
+
 def main() -> None:
     configure_logging()
     start_listener()
 
     correlation_id.set(str(uuid.uuid4()))
 
-    # logger = PythonLoggerAdapter(
-    #     "application.create_order"
-    # )
+    logger = PythonLoggerAdapter(__name__)
+    logger.info(f"Program started")
 
-    logger = PythonLoggerAdapter(
-        __name__
+    use_case = CreateOrderUseCase(
+        logger_provider=PythonLoggerAdapter
     )
 
-
-    use_case = CreateOrderUseCase(logger)
-
     use_case.execute("ORD-123")
-
+    logger.info(f"Program completed")
 
 if __name__ == "__main__":
     main()

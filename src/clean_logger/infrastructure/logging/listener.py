@@ -4,7 +4,7 @@ from logging.handlers import QueueListener
 from logging.handlers import RotatingFileHandler
 
 from .config import LOG_QUEUE
-
+from .context_formatter import ContextFormatter
 
 _listener: QueueListener | None = None
 
@@ -20,9 +20,9 @@ def start_listener() -> None:
         backupCount=5
     )
 
-    formatter = logging.Formatter(
+    formatter = ContextFormatter(
         "%(asctime)s %(levelname)s "
-        "[corr=%(correlation_id)s] "
+        "[run=%(correlation_id)s] "
         "%(name)s %(message)s"
     )
 
@@ -35,7 +35,7 @@ def start_listener() -> None:
         file_handler,
         respect_handler_level=True
     )
-
+    assert _listener is not None
     _listener.start()
 
     atexit.register(stop_listener)

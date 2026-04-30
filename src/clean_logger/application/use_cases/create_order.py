@@ -1,9 +1,12 @@
 from ..ports.logger import AppLogger
 
+from typing import Callable
+
+LoggerProvider = Callable[[str], "AppLogger"]
 
 class CreateOrderUseCase:
-    def __init__(self, logger: AppLogger):
-        self._logger = logger
+    def __init__(self, logger_provider:  LoggerProvider):
+        self._logger = logger_provider(__name__)
 
     def execute(self, order_id: str) -> None:
         self._logger.info(

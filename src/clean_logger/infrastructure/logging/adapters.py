@@ -8,21 +8,24 @@ class PythonLoggerAdapter:
 
     def debug(self, message: str, **context: Any) -> None:
         self._logger.debug(
-            message,
-            extra={"context": context}
-        )
+        message,
+        extra={"context": context} if context else {}
+    )
 
     def info(self, message: str, **context: Any) -> None:
         self._logger.info(
-            f"{message} | {context}"
-        )
+        message,
+        extra={"context": context} if context else {}
+    )
 
     def warning(self, message: str, **context: Any) -> None:
         self._logger.warning(
-            f"{message} | {context}"
-        )
+        message,
+        extra={"context": context} if context else {}
+    )
 
     def error(self, message: str, **context: Any) -> None:
         self._logger.error(
-            f"{message} | {context}"
-        )
+        message,
+        extra={"context": context} if context else {}
+    )

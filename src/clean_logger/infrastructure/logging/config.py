@@ -28,7 +28,7 @@ def configure_logging() -> None:
                 "format": (
                     "%(asctime)s "
                     "%(levelname)s "
-                    "[corr=%(correlation_id)s] "
+                    "[run=%(correlation_id)s] "
                     "%(name)s "
                     "%(message)s"
                 )

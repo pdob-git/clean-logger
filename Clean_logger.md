@@ -403,3 +403,271 @@ Example import-linter rule would fit nicely with your architecture tests
 If you want, I can also show how Uncle Bob / Hexagonal style logging with decorators + middleware fits this.
 
 [1]: https://docs.python.org/3.10/howto/logging-cookbook.html?utm_source=chatgpt.com "Logging Cookbook — Python 3.10.19 documentation"
+
+---
+
+scan this repo: https://github.com/pdob-git/clean-logger and propose changes per discussion above
+
+---
+
+I pulled your repo (`pdob-git/clean-logger`) and reviewed the structure and code patterns. I won’t dump generic advice — here are **concrete changes tailored to your repo** based on what you already built.
+
+---
+
+# 🔍 What you did well (keep this)
+
+Your repo already follows solid Clean Architecture logging:
+
+* ✅ logging configured once (`dictConfig + QueueHandler`)
+* ✅ adapter layer (`PythonLoggerAdapter`)
+* ✅ no `logging` in application layer
+* ✅ correlation_id via `LogRecordFactory`
+
+This aligns perfectly with your design goals 
+
+---
+
+# ❌ Core issue in your repo
+
+Right now you use:
+
+```python
+logger = PythonLoggerAdapter(__name__)
+use_case = CreateOrderUseCase(logger)
+```
+
+This creates a **single logger instance with one name**, so:
+
+```text
+__main__
+```
+
+appears everywhere.
+
+👉 That’s why your logs don’t reflect module names.
+
+---
+
+# ✅ Refactor: introduce “logger provider” (minimal change)
+
+## 1. Change use case constructor
+
+### BEFORE
+
+```python
+class CreateOrderUseCase:
+    def __init__(self, logger: AppLogger):
+        self._logger = logger
+```
+
+### AFTER
+
+```python
+from typing import Callable
+
+LoggerProvider = Callable[[str], "AppLogger"]
+
+class CreateOrderUseCase:
+    def __init__(self, logger_provider: LoggerProvider):
+        self._logger = logger_provider(__name__)
+```
+
+---
+
+## 2. Change `main.py`
+
+### BEFORE
+
+```python
+logger = PythonLoggerAdapter(__name__)
+use_case = CreateOrderUseCase(logger)
+```
+
+### AFTER (cleanest possible)
+
+```python
+use_case = CreateOrderUseCase(
+    logger_provider=PythonLoggerAdapter
+)
+```
+
+✔ no lambda
+✔ no extra class
+✔ minimal diff
+
+---
+
+## 3. Keep adapter unchanged
+
+Your current adapter is already correct:
+
+```python
+class PythonLoggerAdapter:
+    def __init__(self, name: str):
+        self._logger = logging.getLogger(name)
+```
+
+Do not complicate this.
+
+---
+
+# 🎯 Result
+
+### Logs now become:
+
+```text
+application.use_cases.create_order
+```
+
+instead of:
+
+```text
+__main__
+```
+
+✔ correct module names
+✔ still one logging setup
+✔ still Clean Architecture
+
+---
+
+# 🔥 Optional improvement (worth it)
+
+## Lazy logger creation
+
+Avoid creating logger in constructor:
+
+```python
+class CreateOrderUseCase:
+    def __init__(self, logger_provider):
+        self._logger_provider = logger_provider
+        self._logger = None
+
+    @property
+    def logger(self):
+        if self._logger is None:
+            self._logger = self._logger_provider(__name__)
+        return self._logger
+```
+
+Use:
+
+```python
+self.logger.info(...)
+```
+
+---
+
+# 🧠 Even better (reduce repetition across repo)
+
+If many classes use logging:
+
+```python
+class Logged:
+    def __init__(self, logger_provider):
+        self._logger = logger_provider(self.__class__.__module__)
+```
+
+Then:
+
+```python
+class CreateOrderUseCase(Logged):
+    def __init__(self, logger_provider):
+        super().__init__(logger_provider)
+```
+
+Now:
+
+* no `__name__` everywhere
+* no duplication
+
+---
+
+# ❗ What to REMOVE from repo
+
+## ❌ This pattern
+
+```python
+logger = PythonLoggerAdapter(__name__)
+```
+
+in `main` and passing it down.
+
+→ wrong abstraction level
+→ breaks module naming
+
+---
+
+## ❌ Hardcoded names
+
+```python
+PythonLoggerAdapter("application.create_order")
+```
+
+→ fragile
+→ not refactor-safe
+
+---
+
+# ⚖️ Alternative (if you want even simpler)
+
+If you decide DI is overkill:
+
+Just use standard Python:
+
+```python
+logger = logging.getLogger(__name__)
+```
+
+inside each module.
+
+It already:
+
+* uses one global config
+* gives correct module names
+* is zero magic
+
+---
+
+# 🧪 Testing stays clean
+
+No change needed:
+
+```python
+use_case = CreateOrderUseCase(lambda _: fake_logger)
+```
+
+still works perfectly.
+
+---
+
+# 🧩 Final recommendation (for your repo)
+
+Use this:
+
+```python
+CreateOrderUseCase(PythonLoggerAdapter)
+```
+
+This is the sweet spot:
+
+* ✔ Clean Architecture compliant
+* ✔ minimal boilerplate
+* ✔ correct module names
+* ✔ no framework leakage
+* ✔ no complexity
+
+---
+
+# If you want next step
+
+I can:
+
+* refactor your repo file-by-file (ready to paste)
+* add structured JSON logs (ELK / Loki ready)
+* integrate with OpenTelemetry traces
+* or enforce logger usage via import-linter rules (fits your previous setup )
+
+Just tell me 👍
+
+---
