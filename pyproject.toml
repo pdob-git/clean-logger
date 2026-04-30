@@ -18,6 +18,20 @@ classifiers = [
 license = "MIT"
 license-files = ["LICENSE"]
 
+dependencies = [
+    "truststore==0.10.4",
+    "logging==0.4.9.6"
+]
+
+[project.optional-dependencies]
+dev = [
+    "mypy==1.20.2",
+    "mypy_extensions==1.1.0",
+    "pre_commit==4.6.0",
+    "pytest==9.0.3",
+    "typing_extensions==4.15.0",
+]
+
 [project.urls]
 Repository = "https://github.com/pdob-git/clean-logger.git"
 
