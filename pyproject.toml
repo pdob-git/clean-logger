@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "clean_logger"
+dynamic = ["version"]
+description = "Example program to demnostrate logger in clean architecture"
+authors = [
+  { name="Pablo", email=" 75912982+pdob-git@users.noreply.github.com" },
+]
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: Proprietary"
+]
+
+[project.scripts]
+clean_logger = "clean_logger.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N"]
+ignore = []
+
+[tool.setuptools.dynamic]
+version = {attr = "clean_logger.__version__"}
