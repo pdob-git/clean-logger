@@ -13,8 +13,13 @@ readme = "README.md"
 requires-python = ">=3.12"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: Proprietary"
+    "Programming Language :: Python :: 3.12",
 ]
+license = "MIT"
+license-files = ["LICENSE"]
+
+[project.urls]
+Repository = "https://github.com/pdob-git/clean-logger.git"
 
 [project.scripts]
 clean_logger = "clean_logger.__main__:main"
