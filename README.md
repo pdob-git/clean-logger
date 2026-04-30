@@ -104,6 +104,8 @@ All commits should follow conventional commit style: ``feat: ...`` |
 ``fix: ...`` |
 ``docs: ...``.  See the [pre‑commit](.pre-commit-config.yaml) hooks for the required format.
 
+See [conventional commit cheatsheet](docs/conventional-commits-cheatsheet.md)
+
 ---
 
 ## License
