@@ -1,7 +1,6 @@
 import atexit
 import logging
-from logging.handlers import QueueListener
-from logging.handlers import RotatingFileHandler
+from logging.handlers import QueueListener, RotatingFileHandler
 
 from .config import LOG_QUEUE
 from .context_formatter import ContextFormatter
@@ -14,27 +13,16 @@ def start_listener() -> None:
 
     console = logging.StreamHandler()
 
-    file_handler = RotatingFileHandler(
-        "app.log",
-        maxBytes=10_000_000,
-        backupCount=5
-    )
+    file_handler = RotatingFileHandler("app.log", maxBytes=10_000_000, backupCount=5)
 
     formatter = ContextFormatter(
-        "%(asctime)s %(levelname)s "
-        "[run=%(correlation_id)s] "
-        "%(name)s %(message)s"
+        "%(asctime)s %(levelname)s " "[run=%(correlation_id)s] " "%(name)s %(message)s"
     )
 
     console.setFormatter(formatter)
     file_handler.setFormatter(formatter)
 
-    _listener = QueueListener(
-        LOG_QUEUE,
-        console,
-        file_handler,
-        respect_handler_level=True
-    )
+    _listener = QueueListener(LOG_QUEUE, console, file_handler, respect_handler_level=True)
     assert _listener is not None
     _listener.start()
 

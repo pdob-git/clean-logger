@@ -1,7 +1,11 @@
-from typing import Protocol, Any
+from typing import Any, Protocol
 
 
 class AppLogger(Protocol):
+    # noinspection PyUnusedLocal
+    def __init__(self, name: str):
+        ...
+
     def debug(self, message: str, **context: Any) -> None:
         ...
 

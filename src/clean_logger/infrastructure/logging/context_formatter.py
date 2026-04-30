@@ -1,7 +1,8 @@
 import logging
 
+
 class ContextFormatter(logging.Formatter):
-    def format(self, record):
+    def format(self, record: logging.LogRecord) -> str:
         msg = super().format(record)
 
         context = getattr(record, "context", None)
