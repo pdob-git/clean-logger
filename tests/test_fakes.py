@@ -5,7 +5,6 @@ from clean_logger.infrastructure.logging.adapters import PythonLoggerAdapter
 
 
 class FakeLoggerAdapter(PythonLoggerAdapter):
-    # noinspection PyUnusedLocal
     def __init__(self, name: str) -> None:
         super().__init__(name)
         self.messages: List[Any] = []
