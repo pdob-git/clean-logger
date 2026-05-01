@@ -190,7 +190,6 @@ from logging.handlers import RotatingFileHandler
 
 from infrastructure.logging.config import LOG_QUEUE
 
-
 _listener: QueueListener | None = None
 
 
@@ -200,7 +199,7 @@ def start_listener() -> None:
     console = logging.StreamHandler()
 
     file_handler = RotatingFileHandler(
-        "app.log",
+        "../app.log",
         maxBytes=10_000_000,
         backupCount=5
     )

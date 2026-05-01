@@ -69,10 +69,10 @@ python -m clean_logger
 You should see something like:
 
 ```
-2026-04-30 12:59:51,673 INFO [run=9c324cba-5972-45ba-b99c-451e22196bd7] clean_logger.presentation.cli Program started
-2026-04-30 12:59:51,673 INFO [run=9c324cba-5972-45ba-b99c-451e22196bd7] clean_logger.application.use_cases.create_order Creating order | {'order_id': 'ORD-123'}
-2026-04-30 12:59:51,673 INFO [run=9c324cba-5972-45ba-b99c-451e22196bd7] clean_logger.application.use_cases.create_order Order created | {'order_id': 'ORD-123'}
-2026-04-30 12:59:51,673 INFO [run=9c324cba-5972-45ba-b99c-451e22196bd7] clean_logger.presentation.cli Program completed
+2026-05-01 23:54:12,244 INFO [run=c3e227e6-a69f-4e82-a654-cc4760d2b3a8] clean_logger.presentation.cli Program started
+2026-05-01 23:54:12,244 INFO [run=c3e227e6-a69f-4e82-a654-cc4760d2b3a8] clean_logger.application.use_cases.create_order Creating order
+2026-05-01 23:54:12,244 INFO [run=c3e227e6-a69f-4e82-a654-cc4760d2b3a8] clean_logger.application.use_cases.create_order Order created
+2026-05-01 23:54:12,244 INFO [run=c3e227e6-a69f-4e82-a654-cc4760d2b3a8] clean_logger.presentation.cli Program completed
 ```
 
 The output is emitted by the standard‐library `logging` module, but a fully‑fledged JSON formatter can be swapped in by editing ``src/clean_logger/infrastructure/logging/config.py``.
