@@ -1,5 +1,7 @@
 import logging
 
+from .context_formatter import ContextFormatter
+
 
 class CorrelationIdFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
@@ -12,7 +14,7 @@ class CorrelationIdFilter(logging.Filter):
 def configure_logging() -> None:
     handler = logging.StreamHandler()
     handler.setFormatter(
-        logging.Formatter("%(asctime)s %(levelname)s [run=%(correlation_id)s] %(name)s %(message)s")
+        ContextFormatter("%(asctime)s %(levelname)s [run=%(correlation_id)s] %(name)s %(message)s")
     )
     handler.addFilter(CorrelationIdFilter())
 

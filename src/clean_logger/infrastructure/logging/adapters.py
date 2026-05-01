@@ -5,6 +5,7 @@ from ...application.ports.logger import AppLogger
 
 
 class PythonLoggerAdapter(AppLogger):
+    # noinspection PyMissingConstructor
     def __init__(self, name: str):
         self._logger = logging.getLogger(name)
 
